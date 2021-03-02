@@ -1,0 +1,156 @@
+<html>
+    <head>
+        <title>지역검색</title>
+        <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.js"></script>
+        <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=83241b51b26798a25aa23b3f331ba439"></script>
+        <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=83241b51b26798a25aa23b3f331ba439&libraries=services"></script>
+        <link rel="stylesheet" type="text/css" href="style2.css">
+
+        <style>
+            #top{
+                background: linear-gradient(60deg, rgb(255, 194, 194), rgb(181, 181, 255));
+                padding: 20px;
+            }
+            #tbl{
+                width: auto;
+
+            }
+            body{
+                background-color: white;
+            }
+            td{
+                padding: 10px;
+                margin: 10px;
+            }
+            tr{
+                margin: 10px;
+            }
+            .box{
+                width: 200px;
+                height: 300px;
+                background-color: #aaa;
+                float:left;
+                text-align: center;
+                padding: 20px;
+                margin: 10px;
+
+            }
+            .ellipsis { 
+                white-space:nowrap; overflow:hidden; text-overflow:ellipsis; 
+                width:200px;}
+        </style>
+    </head>
+    <body>
+        <center>
+        <div id="top">
+            <a href="blog.html">블로그검색</a>&nbsp;&nbsp;&nbsp;
+            <a href="book.html">도서검색</a>&nbsp;&nbsp;&nbsp;
+            <a href="local.html">지역검색</a>&nbsp;&nbsp;&nbsp;
+        </div>
+        <div id=pages>
+        <h1>[장소검색]</h1>
+            
+        <div id="divSearch">
+            <input type="text" id="txtQuery" value="학익"/>
+            <input type="button" value=" 검 색 " id="btnSearch"/>
+            <select id="selSize">
+                <option value=3>3행씩출력</option>
+                <option value=6 selected>6행씩출력</option>
+                <option value=9>9행씩출력</option>
+                <option value=12>12행씩출력</option>
+            </select>
+        <span id="total"></span>
+      </div>
+      <br>
+    
+      <div id="tbl"></div>
+      
+      </tr>
+      <script id="temp" type="text/x-handlebars-template">
+        <tr class="title">
+            <td>장소이름</td>
+            <td>주소</td>
+            <td>전화번호</td>
+            <td width=250px>지도보기</td>
+          {{#each documents}}
+          <tr class="row">
+              <td class="ellipsis">{{{place_name}}}</td>
+              <td class="ellipsis">{{address_name}}</td>
+              <td class="ellipsis">{{phone}}</td>
+              <td><button name=map x="{{x}}" y="{{y}}" place="{{{place_name}}}">지도</button></td>
+          </tr>
+          {{/each}}
+      </script>
+      <div id="divPage">
+        <button id="btnPre">◀</button>
+        <span id="page"></span>
+        <button id="btnNext">▶</button>
+    </div>
+    <div id="darken-background">
+        <div id="lightbox">
+            <div id="map" style="margin: 20px 0px 0px 20px; width:450px; height:300px; border: 1px solid black; border-radius: 5px;"></div>
+            <br>
+            <button id="btnClose">닫기</button>
+        </div>
+    </div>
+    </center> 
+    </div>  
+    <script>
+        var url="https://dapi.kakao.com/v2/local/search/keyword.json";
+
+        $("#tbl").on("click", ".row button", function(){
+            $("#darken-background").show();
+            var x=$(this).attr("x"); //this=버튼
+            var y=$(this).attr("y");
+            var place=$(this).attr("place");
+            
+            getMap(x, y);
+        });
+        function getMap(x, y){
+            var container = document.getElementById('map');
+          var options = {
+         center: new kakao.maps.LatLng(y, x),
+         level: 3
+      };
+      var map = new kakao.maps.Map(container, options);
+
+      var content = '<div class="overlay_info">';
+    content += '    <a target="_blank"><strong>'+'</strong></a>';
+    content += '    <div class="desc">';
+    content += '        <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/place_thumb.png" alt="">';
+    content += '        <span class="address">제주특별자치도 제주시 구좌읍 월정리 33-3</span>';
+    content += '    </div>';
+    content += '</div>';
+
+    var position = new kakao.maps.LatLng(y, x);
+
+    var mapCustomOverlay = new kakao.maps.CustomOverlay({
+    position: position,
+    content: content,
+    xAnchor: 0.5, // 커스텀 오버레이의 x축 위치입니다. 1에 가까울수록 왼쪽에 위치합니다. 기본값은 0.5 입니다
+    yAnchor: 1.1 // 커스텀 오버레이의 y축 위치입니다. 1에 가까울수록 위쪽에 위치합니다. 기본값은 0.5 입니다
+});
+
+    // 커스텀 오버레이를 지도에 표시합니다
+    mapCustomOverlay.setMap(map);
+        }
+
+        
+
+        //라이트박스
+        $("#tbl").on("click",".box img", function(){
+            $("#image").attr("src", $(this).attr("src")); //this의 src값을 가져와서 img의 src값을 가져오기
+            $("#contents").html($(this).attr("contents")); //attr은 set, get 둘 다 가능
+            $("#darken-background").show();
+        });
+
+        $("#btnClose").on("click",function(){
+            $("#darken-background").hide();
+        });
+
+        
+
+    </script>
+    <script src=script.js></script>
+    </html>

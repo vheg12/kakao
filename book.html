@@ -1,0 +1,104 @@
+<html>
+    <head>
+        <title>도서검색</title>        
+        <link rel="stylesheet" href="style2.css"/>
+        <style>
+            #tbl{width: 900px; overflow: hidden; margin: 0px auto;}
+            .box {width:200px; float: left;background: rgb(187, 140, 231);
+                height: 250px;
+                padding-top: 35px;
+                margin: 10px;
+                text-align: center;
+                border-radius: 10px;}
+            .box .title{white-space:nowrap; overflow:hidden; 
+                text-overflow:ellipsis; 
+                font-size:12px;width:200px;padding: 5px 5px 0px 0px;font-weight: bold;}
+            #pages{
+                width: 1000px;
+                background-color: #fff;
+
+            }
+            #top{
+                background-color:  rgb(187, 140, 231);
+                padding: 20px;
+            }
+            #image{
+                margin-bottom: 50px;
+            }
+        </style>
+        <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.js"></script>
+    </head>
+    <body>
+        <center>
+        <div id="pages">
+            <div id="top">
+                <a href="blog.html">블로그검색</a>&nbsp;&nbsp;&nbsp;
+                <a href="book.html">도서검색</a>&nbsp;&nbsp;&nbsp;
+                <a href="local.html">지역검색</a>&nbsp;&nbsp;&nbsp;
+            </div>
+            <div id="content">
+                <h1 class="subject">[도서검색]</h1>
+                <br>
+                <div id="divSearch">
+                    <input type="text" id="txtQuery" value="자바">
+                    <input type="button" id="btnSearch" value="검색">
+                    <select id="selSize">
+                        <option value=4>4개씩출력</option>
+                        <option value=8 selected>8개씩출력</option>
+                        <option value=12>12개씩출력</option>
+                        <option value=16>16개씩출력</option>
+                    </select>
+                </div>
+                <div id="tbl"></div>
+        <script id="temp" type="text/x-handlebars-template">
+            {{#each documents}}
+            <div class="box">
+                <img src="{{thumbnail}}" width="100px" contents="{{contents}}" title="{{title}}">
+                <div class="ellipsis"><a href="{{url}}">{{{title}}}</a></div>
+                <div> <b>{{price}}원</b></div>
+            </div>
+            {{/each}}
+        </script>
+        <br>
+                <div id="divPage">
+                    <button id="btnPre">◀</button>
+                    <span id="spanPage"></span>
+                    <button id="btnNext">▶</button>
+                </div>
+            </div>
+            <br>
+            <div id="bottom" >
+                <h3>작성자:인천일보아카데미 장하연</h3>
+            </div>
+            <br><br>
+            </div>
+            <div id="darken-background">
+                <div id="lightbox">
+                    <div><img id=image src="" width="300" ></div>
+                    <div id=title></div>
+                    <div id=contents></div>
+                    
+                    <button id="btnClose">닫기</button>
+                </div>
+            </div>
+            
+        </center>
+    </body>
+    <script>
+        var url="https://dapi.kakao.com/v3/search/book?target=title";
+         $("#tbl").on("click",".box img",function(){
+            $("#image").attr("src", $(this).attr("src"));
+            $("#contents").html($(this).attr("contents"));
+            $("#darken-background").show();
+            $("title").html($(this).parent().parent().find(".title"));
+
+
+        });
+        $("#btnClose").on("click",function(){
+            $("#darken-background").hide();
+        });
+        
+    </script>
+    <script src="script.js"></script>
+</html>
